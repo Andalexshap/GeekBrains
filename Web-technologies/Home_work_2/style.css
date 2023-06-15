@@ -1,0 +1,14 @@
+html{ background-color: rgb(200, 200, 200)}
+h1{ font-size: 250%;
+    color: red}
+h2{ font-size: 200%;
+    color: rgb(183, 156, 21)}
+h3{ font-size: 180%;
+    color: rgb(0, 156, 21)}
+a{ color: green}
+p{ font-size: 150%}
+li{font-size: 150%}
+.big_text{
+    font-size: 150%;
+    color: purpur
+}
