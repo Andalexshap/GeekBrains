@@ -9,13 +9,13 @@ namespace Algorithms.Models
 {
     public class LinkList<T> : IEnumerable<T>
     {
-        public Node<T> head;
-        public Node<T> tail;
+        public TreeNode<T> head;
+        public TreeNode<T> tail;
 
 
         public void Push(T item)
         {
-            var node = new Node<T>(item);
+            var node = new TreeNode<T>(item);
             node.Next = head;
             head.Previous = node;
             head = node;
@@ -54,7 +54,7 @@ namespace Algorithms.Models
         }
         public void AddLast(T item)
         {
-            Node<T> node = new Node<T>(item);
+            TreeNode<T> node = new TreeNode<T>(item);
 
             if (head == null)
             {
@@ -69,10 +69,10 @@ namespace Algorithms.Models
             }
         }
 
-        public void AddAfter(Node<T> node, T item)
+        public void AddAfter(TreeNode<T> node, T item)
         {
-            Node<T> next = node.Next;
-            Node<T> newNode = new Node<T>(item);
+            TreeNode<T> next = node.Next;
+            TreeNode<T> newNode = new TreeNode<T>(item);
 
             node.Next = newNode;
             newNode.Previous = node;
@@ -89,10 +89,10 @@ namespace Algorithms.Models
 
         }
 
-        public void Remove(Node<T> node)
+        public void Remove(TreeNode<T> node)
         {
-            Node<T> previous = node.Previous;
-            Node<T> next = node.Next;
+            TreeNode<T> previous = node.Previous;
+            TreeNode<T> next = node.Next;
 
             if (previous == null)
             {
@@ -139,7 +139,7 @@ namespace Algorithms.Models
                 Revert(head.Next, head);
             }
         }
-        private void Revert(Node<T> currentNode, Node<T> previousNode)
+        private void Revert(TreeNode<T> currentNode, TreeNode<T> previousNode)
         {
             if (currentNode.Next == null) head = currentNode;
             else Revert(currentNode.Next, currentNode);
@@ -148,11 +148,11 @@ namespace Algorithms.Models
             previousNode.Next = null;
         }
 
-        public Node<T> Find(T value)
+        public TreeNode<T> Find(T value)
         {
             if (value.GetType() == typeof(T))
             {
-                Node<T> currentNode = head;
+                TreeNode<T> currentNode = head;
                 while (currentNode != null)
                 {
                     if (currentNode.Data.Equals(value)) return currentNode;
