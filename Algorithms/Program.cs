@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Xml.Linq;
 using Algorithms.Models;
 using Algorithms.Services;
 
@@ -139,3 +140,21 @@ Console.WriteLine(String.Join(" : ", linkList));
 
 #endregion
 
+#region Tree
+RedBlackTree tree = new RedBlackTree();
+tree.Insert(10);
+tree.Insert(20);
+tree.Insert(30);
+tree.Insert(15);
+tree.Insert(18);
+tree.Insert(25);
+TreeNode found = tree.Search(18);
+if (found != null)
+{
+    Console.WriteLine("Found node with value " + found.value);
+}
+else
+{
+    Console.WriteLine("Node not found");
+}
+#endregion

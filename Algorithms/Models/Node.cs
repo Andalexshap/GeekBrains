@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Algorithms.Models
 {
-    public class Node<T>
+    public class TreeNode<T>
     {
-        public Node(T data)
+        public TreeNode(T data)
         {
             Data = data;
         }
         public T Data { get; set; }
-        public Node<T>? Next { get; set; }
-        public Node<T>? Previous { get; set; }
+        public TreeNode<T>? Next { get; set; }
+        public TreeNode<T>? Previous { get; set; }
     }
 }
