@@ -1,0 +1,5 @@
+mysql-connector-python==8.0.32
+prettytable==3.6.0
+protobuf==3.20.3
+python-dotenv==1.0.0
+wcwidth==0.2.6

@@ -48,7 +48,6 @@ def find_sqrt():
     print(f'Корни уравнения для заданного интервала: {roots}')
     return roots
 
-
 # Определить промежутки, на которых f>0 и f<0:
 def func_interval(left, right):
     array = [[0,0]]
