@@ -2,6 +2,6 @@
 {
     public class Animal
     {
-        private static string Name = string.Empty;//
+        private static string Name = string.Empty;
     }
 }
