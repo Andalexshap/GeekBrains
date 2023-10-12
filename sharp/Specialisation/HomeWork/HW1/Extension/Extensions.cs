@@ -74,23 +74,31 @@ namespace HW1.Extension
 
             foreach (var c in grandfather.Childs)
             {
-                PrintChild(c);
+                PrintChild(c,family);
             }
         }
-        private static void PrintChild(FamilyMember familyMember, int tab = 2)
+
+        private static void PrintChild(FamilyMember familyMember, IEnumerable<FamilyMember>? family, int tab = 2)
         {
             var familyRoles = new List<FamilyRole>();
             if (familyMember.Roles.Contains(FamilyRole.Son)) familyRoles.Add(FamilyRole.Son);
             if (familyMember.Roles.Contains(FamilyRole.Daughter)) familyRoles.Add(FamilyRole.Daughter);
+           
+            var spouse = family.FirstOrDefault(x => x.Childs.Contains(familyMember.Childs.FirstOrDefault()) && x != familyMember);
             
+            var spouseFamilyRoles = new List<FamilyRole>();
+            if (spouse != null && spouse.Roles.Contains(FamilyRole.Wife)) spouseFamilyRoles.Add(FamilyRole.Wife);
+            if (spouse != null && spouse.Roles.Contains(FamilyRole.Husband)) spouseFamilyRoles.Add(FamilyRole.Husband);
 
             Console.WriteLine(new string('\t', tab++)+ string.Join(",", familyRoles) + " " + familyMember.GetFullName());
+            if (spouse != null)
+            Console.WriteLine(new string('\t', tab-1) + string.Join(",", spouseFamilyRoles) + " " + spouse.GetFullName());
             if (familyMember.Childs.Any())
             {
                 Console.WriteLine(new string('\t', tab++)+"Childs:");
                 foreach(var child in familyMember.Childs)
                 {
-                    PrintChild(child, tab);
+                    PrintChild(child,family, tab);
                 }
             }
 
