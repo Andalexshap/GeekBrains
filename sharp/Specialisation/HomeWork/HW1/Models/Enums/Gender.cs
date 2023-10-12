@@ -2,7 +2,7 @@
 {
     enum Gender
     {
-        Mane,
+        Male,
         Female
     }
 }
