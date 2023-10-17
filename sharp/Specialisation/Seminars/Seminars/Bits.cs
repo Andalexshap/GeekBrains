@@ -65,9 +65,10 @@
         #endregion
 
         public static implicit operator long(Bits b) => b.Value;
-        public static explicit operator Bits(byte b) => new Bits(b);
-        public static explicit operator Bits(short b) => new Bits(b);
-        public static explicit operator Bits(int b) => new Bits(b);
+        public static implicit operator Bits(long b) => new Bits(b);
+        public static implicit operator Bits(byte b) => new Bits(b);
+        public static implicit operator Bits(short b) => new Bits(b);
+        public static implicit operator Bits(int b) => new Bits(b);
 
 
         public bool GetBit(int i)
