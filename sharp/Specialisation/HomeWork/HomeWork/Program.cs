@@ -58,7 +58,7 @@
             if (temp.Item1 + 1 < l.GetLength(0) && l[temp.Item1 + 1, temp.Item2] != 1)
                 stack.Push(new(temp.Item1 + 1, temp.Item2)); // право
         }
-
+        Console.WriteLine($"Найдено выходов: {exist}");
         return exist;
     }
 }
