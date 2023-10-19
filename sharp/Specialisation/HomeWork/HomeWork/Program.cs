@@ -41,7 +41,6 @@
 
             if (l[temp.Item1, temp.Item2] == 2)
             {
-                Console.WriteLine("Выход найден!");
                 return exist++;
             }
 
