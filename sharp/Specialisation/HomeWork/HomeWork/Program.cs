@@ -16,7 +16,7 @@
         {0, 0, 0, 0, 1, 0, 2 },
         {1, 1, 0, 0, 1, 1, 1 },
         {1, 1, 1, 0, 1, 1, 1 },
-        {1, 1, 1, 0, 1, 1, 1 }
+        {1, 1, 1, 2, 1, 1, 1 }
         };
 
         Console.WriteLine(HasExit(3, 0, labirynth1));
@@ -41,18 +41,18 @@
 
             if (l[temp.Item1, temp.Item2] == 2)
             {
-                return exist++;
+                exist++;
             }
 
             l[temp.Item1, temp.Item2] = 1;
 
-            if (temp.Item2 >= 0 || l[temp.Item1, temp.Item2 - 1] != 1)
+            if (temp.Item2 > 0 && l[temp.Item1, temp.Item2 - 1] != 1)
                 stack.Push(new(temp.Item1, temp.Item2 - 1)); // вверх
 
-            if (temp.Item2 + 1 < l.GetLength(1) || l[temp.Item1, temp.Item2 + 1] != 1)
+            if (temp.Item2 + 1 < l.GetLength(1) && l[temp.Item1, temp.Item2 + 1] != 1)
                 stack.Push(new(temp.Item1, temp.Item2 + 1)); // низ
 
-            if (temp.Item1 >= 0 || l[temp.Item1 - 1, temp.Item2] != 1)
+            if (temp.Item1 > 0 && l[temp.Item1 - 1, temp.Item2] != 1)
                 stack.Push(new(temp.Item1 - 1, temp.Item2)); // лево
 
             if (temp.Item1 + 1 < l.GetLength(0) && l[temp.Item1 + 1, temp.Item2] != 1)
