@@ -9,9 +9,9 @@ internal class Program
 		var a = "";
 		try
 		{
-			for (int i = 0; i < 8; i++)
+			for (int j = 0; j < 8; j++)
 			{
-				a += value.GetBit(i) ? 1 : 0;
+				a += value.GetBit(j) ? 1 : 0;
 
 			}
 			a = string.Join("", a.Reverse());
@@ -26,5 +26,14 @@ internal class Program
 		{
 			Console.WriteLine(ex.Message);
 		}
-	}
+
+		long l = 1234;
+		int i = 123;
+		short s = 12;
+		byte b = 1;
+		Bits resultL = l;
+        Bits resultI = i;
+        Bits resultS = s;
+        Bits resultB = b;
+    }
 }
