@@ -1,4 +1,4 @@
-﻿namespace Seminars
+﻿namespace Seminar1
 {
     public interface IBits
     {

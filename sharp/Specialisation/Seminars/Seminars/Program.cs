@@ -1,4 +1,4 @@
-﻿using Seminars;
+﻿using Seminar1;
 
 internal class Program
 {
