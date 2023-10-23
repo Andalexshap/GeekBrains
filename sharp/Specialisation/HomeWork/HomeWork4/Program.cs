@@ -9,25 +9,30 @@
         в оставшейся его части два числа равных по сумме первому.
         */
 
-        var nums = Enumerable.Range(0, 50).Select(i => i).ToArray();
+        var nums = new HashSet<int>(Enumerable.Range(0, 50).Select(i => i));
 
+        FindTermOfTarget(nums, 10);
 
     }
 
-    public void FindTermOfTarget(IEnumerable<int> nums, int target)
+    public static void FindTermOfTarget(HashSet<int> nums, int target)
     {
         var error = "Невозможно составить слагаемые из представленых чисел";
 
         var firstPossibleTerm = nums.Where(f => f < target);
+
         if (!firstPossibleTerm.Any())
         {
             var secondPossibleTerm =
-                firstPossibleTerm.Where(x => target - x < target);
-
-            if (!secondPossibleTerm.Any())
-            {
-
-            }
+                firstPossibleTerm.Where(x => target - x < target).Select(x => new
+                {
+                    firstTerm = x,
+                    secondTerm = () =>
+                    {
+                        if (firstPossibleTerm.Contains(target - x)) return target - x;
+                        else return 0;
+                    }
+                }).Where;
         }
 
         Console.WriteLine(error);
