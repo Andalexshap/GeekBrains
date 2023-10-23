@@ -155,4 +155,22 @@ internal class Program
             .ForEach(Console.WriteLine);
 
     }
+
+    public static void Task7()
+    {
+        /*
+         Дан массив и число. Найдите три числа в массиве сумма которых равна искомому числу. 
+        Подсказка: если взять первое число в массиве, можно ли найти в оставшейся его части 
+        два числа равных по сумме первому.
+        Поиск общих элементов в двух коллекциях
+
+
+         */
+
+        HashSet<int> hashSet = new HashSet<int> { 1, 2, 3, 4, 5 };
+        List<int> list = new List<int> { 3, 4, 5, 6, 7 };
+
+        var result = hashSet.Intersect(list);
+
+    }
 }
