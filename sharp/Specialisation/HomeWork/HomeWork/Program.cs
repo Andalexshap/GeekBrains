@@ -19,7 +19,7 @@
         {1, 1, 1, 2, 1, 1, 1 }
         };
 
-        Console.WriteLine(HasExit(3, 0, labirynth1));
+        Console.WriteLine(HasExit(3, 6, labirynth1));
     }
 
     static int HasExit(int startI, int startJ, int[,] l)
