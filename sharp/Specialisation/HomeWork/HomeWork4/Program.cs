@@ -9,33 +9,45 @@
         в оставшейся его части два числа равных по сумме первому.
         */
 
-        var nums = new HashSet<int>(Enumerable.Range(0, 50).Select(i => i));
+        var nums = Enumerable.Range(0, 50).Select(i => i);
 
-        FindTermOfTarget(nums, 10);
+        FindTermOfTarget(nums, 100);
 
     }
 
-    public static void FindTermOfTarget(HashSet<int> nums, int target)
+    public static void FindTermOfTarget(IEnumerable<int> numbers, int target)
     {
-        var error = "Невозможно составить слагаемые из представленых чисел";
+        var nums = numbers.OrderBy(x => x).ToArray(); 
+        
+        var result = new List<(int, int, int)>();
 
-        var firstPossibleTerm = nums.Where(f => f < target);
-
-        if (!firstPossibleTerm.Any())
+        for (int i = 0; i < nums.Count() - 2; i++)
         {
-            var secondPossibleTerm =
-                firstPossibleTerm.Where(x => target - x < target).Select(x => new
+            int left = i + 1;
+            int right = nums.Count() - 1;
+
+            while (left < right)
+            {
+                int sum = nums[i] + nums[left] + nums[right];
+
+                if (sum == target)
                 {
-                    firstTerm = x,
-                    secondTerm = () =>
-                    {
-                        if (firstPossibleTerm.Contains(target - x)) return target - x;
-                        else return 0;
-                    }
-                }).Where;
+                    // Нашли комбинацию трех чисел
+                    result.Add((nums[i], nums[left], nums[right]));
+                    break;
+                }
+                else if (sum < target)
+                {
+                    left++;
+                }
+                else
+                {
+                    right--;
+                }
+            }
         }
 
-        Console.WriteLine(error);
-
+        if (result.Any()) result.ForEach(x => Console.WriteLine($"Возможные слагаемые : {x.Item1}, {x.Item2}, {x.Item3}"));
+        else Console.WriteLine("Невозможно составить слагаемые из представленых чисел");
     }
 }
