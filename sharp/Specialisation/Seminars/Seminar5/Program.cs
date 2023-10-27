@@ -16,7 +16,7 @@ internal class Program
         //Task1(actions);
         //Task2(delegateList);*/
 
-        var calc = new Calc();
+        /*var calc = new Calc();
         calc.MyEventHandler += Calc_MyEventHandler;
         calc.Sum(10);
         calc.Sub(1);
@@ -26,7 +26,11 @@ internal class Program
         calc.CancelLast();
         calc.CancelLast();
         calc.CancelLast();
-        calc.CancelLast();
+        calc.CancelLast();*/
+
+        var str = new List<string>() { "1", "2", "3" };
+        Task3(str, int.Parse, (x) => Console.WriteLine(x));
+
     }
 
     private static void Calc_MyEventHandler(object? sender, EventArgs e)
@@ -35,10 +39,31 @@ internal class Program
             Console.WriteLine(((Calc)sender).Result);
     }
 
+    //Описание: Создайте метод, который принимает список строк, функцию
+    //(делегат Func) для преобразования строк в числа и действие
+    //(делегат Action) для выполнения какого-либо действия с числами.
 
+    static void Task3(
+        List<string> args,
+        Func<string, int> func,
+        Action<int> action)
+    {
+        foreach (var item in args)
+        {
+            int res = func(item);
+            action(res);
+        }
+    }
 
-
-
+    public static void IsAdult(List<string> ages, Func<string, int> func, Predicate<int> predicate, Action<int> action)
+    {
+        foreach (var age in ages)
+        {
+            int res = func(age);
+            if (predicate(res))
+                action(res);
+        }
+    }
 
     static void Task2(List<myDelegate> delegateList)
     {
