@@ -8,7 +8,7 @@ namespace HomeWork8
         private string MainDirectory { get; set; } = @"C:/";
         private string FileExtension { get; set; } = "";
         private string TargetWorld { get; set; } = "";
-        public IEnumerable<string> FindResult { get; set; } = new List<string>();
+        public List<string> FindResult { get; set; } = new List<string>();
 
         public void SetMainDirectory(string path)
             => MainDirectory = path;
@@ -25,12 +25,12 @@ namespace HomeWork8
             try
             {
                 dirs.AddRange(Directory.EnumerateDirectories(string.IsNullOrWhiteSpace(dirrectory) ? MainDirectory : dirrectory));
-                files.AddRange(Directory.EnumerateFiles(MainDirectory, FileExtension));
+                files.AddRange(Directory.EnumerateFiles(MainDirectory).Where(x => x.Contains(FileExtension)));
 
             }
             catch (UnauthorizedAccessException ex)
             {
-                Console.WriteLine("Поиск в дирректории запрещен!" + ex.Message);
+                Console.WriteLine("Ошибка доступа к файлу или директории!" + ex.Message);
             }
             foreach (var file in files)
             {
@@ -44,9 +44,8 @@ namespace HomeWork8
                         if (line.Contains(TargetWorld))
                         {
                             Console.WriteLine($"Файл {file}, " +
-                                $"Содержит слово : {TargetWorld}, в строке {count}");
-                            FindResult.Append($"Файл: {file}, строка {count}");
-                            break;
+                                $"Содержит слово : '{TargetWorld}', в строке {count}");
+                            FindResult.Add($"Файл: {file}, строка {count}");
                         }
                         count++;
                     }
