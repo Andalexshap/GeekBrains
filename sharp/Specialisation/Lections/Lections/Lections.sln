@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP_UDP_DNS", "TCP_UDP_DNS\TCP_UDP_DNS.csproj", "{FEE40024-9E9C-483D-B982-17961EDDC55B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clients", "Clients\Clients.csproj", "{26116985-7252-4027-AE2B-4DE1F7E223A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEE40024-9E9C-483D-B982-17961EDDC55B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE40024-9E9C-483D-B982-17961EDDC55B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE40024-9E9C-483D-B982-17961EDDC55B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE40024-9E9C-483D-B982-17961EDDC55B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26116985-7252-4027-AE2B-4DE1F7E223A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26116985-7252-4027-AE2B-4DE1F7E223A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26116985-7252-4027-AE2B-4DE1F7E223A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26116985-7252-4027-AE2B-4DE1F7E223A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {88542CCC-7A4A-4691-8F1E-88BC9257B201}
+	EndGlobalSection
+EndGlobal
