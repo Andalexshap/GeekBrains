@@ -5,6 +5,7 @@ internal class Program
     private static void Main(string[] args)
     {
 
-        SocketListener.Start();
+        // SocketListener.Start();
+        ServerUdp.Start();
     }
 }
