@@ -22,7 +22,7 @@ namespace Clients
                     byte[] data = Encoding.UTF8.GetBytes("Привет");
                     int count = client.Send(data);
                     if (count == data.Length)
-                        Console.WriteLine($"Отправленно сообщение {Encoding.UTF8.GetString(data)}");
+                        Console.WriteLine($"Отправлено сообщение '{Encoding.UTF8.GetString(data)}'");
                     else
                         Console.WriteLine("Что то пошло не так");
                 }

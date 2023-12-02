@@ -27,7 +27,7 @@ namespace TCP_UDP_DNS
                 if (count > 0)
                 {
                     string message = Encoding.UTF8.GetString(buffer);
-                    Console.WriteLine($"Получено сообщение {message}");
+                    Console.WriteLine($"Получено сообщение '{message}'");
                 }
                 else
                 {
