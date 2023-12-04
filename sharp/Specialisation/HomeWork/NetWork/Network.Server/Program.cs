@@ -8,7 +8,8 @@ internal class Program
 
             Server server = new Server(10);
             server.Start();
+
             Console.ReadLine();
-        Environment.Exit(0);
+            Environment.Exit(0);
         }
 }
