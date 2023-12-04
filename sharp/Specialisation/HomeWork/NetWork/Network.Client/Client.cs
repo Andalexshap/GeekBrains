@@ -31,7 +31,9 @@ namespace Network.Client
             while (true)
             {
                 Console.Write("> ");
-                string input = Console.ReadLine();
+                var mess = Console.ReadLine();
+                if (mess.Equals("Exit")) Environment.Exit(0);
+                string input = mess;
                 if (input == null || string.IsNullOrEmpty(input))
                     continue;
 

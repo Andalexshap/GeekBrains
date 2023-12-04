@@ -50,6 +50,7 @@ namespace Network.Server
             Print(message);
 
             await SendMessage(new string[3] { "Сообщение принято сервером", "Server", message.NickNameTo.ToString() });
+            var a = Console.ReadLine();
         }
 
         async Task<bool> SendMessage(string[] parts)
