@@ -11,10 +11,11 @@ namespace Network.Server
         UdpClient udpClient;
         IPEndPoint iPEndPoint;
         private readonly int _maxCountUsers;
+        private readonly CancellationToken _ct;
 
-        public Server(int maxCountUsers)
+        public Server(int maxCountUsers, CancellationToken ct = default)
         {
-
+            _ct = ct;   
             _maxCountUsers = maxCountUsers;
 
         }
@@ -30,8 +31,8 @@ namespace Network.Server
         {
             for (int i = 0; i < _maxCountUsers; i++)
             {
-                Thread thread = new(() => HandleClient());
-                thread.Start();
+                Task task = new(() => HandleClient(),_ct);
+                task.Start();
             }
         }
 

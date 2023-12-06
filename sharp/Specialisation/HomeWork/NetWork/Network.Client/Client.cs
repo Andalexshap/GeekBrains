@@ -16,7 +16,7 @@ namespace Network.Client
         public Client(string ip, string nickName)
         {
             _nickName = nickName;
-            _ip = ip;            
+            _ip = ip;
         }
 
         public void Start()
@@ -67,15 +67,24 @@ namespace Network.Client
 
         async Task GetMessage()
         {
-            byte[] buffer = udpClient.Receive(ref iPEndPoint);
+            Message? getMessage = null;
+            try
+            {
+                byte[] buffer = udpClient.Receive(ref iPEndPoint);
 
-            var getMessage = await Task.FromResult(_sendGet.FormingMessageForGet(buffer).Result);
+                getMessage = await Task.FromResult(_sendGet.FormingMessageForGet(buffer).Result);
+            }
+            catch
+            {
+                Console.WriteLine("Возникла ошибка на стороне срвера, возможно он отключен. Приложение будет закрыто!");
+                Environment.Exit(0);
+            }
+
 
             if (getMessage is null)
                 Console.WriteLine("Ошибка обработки сообщения.");
-
-            Print(getMessage);
-
+            else
+                Print(getMessage);
         }
 
         public void Print(Message message)
