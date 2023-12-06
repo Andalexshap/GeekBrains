@@ -17,7 +17,6 @@ namespace Network.Server
         {
             _ct = ct;   
             _maxCountUsers = maxCountUsers;
-
         }
 
         public void Start()
@@ -38,9 +37,23 @@ namespace Network.Server
 
         async void HandleClient()
         {
-            byte[] buffer = udpClient.Receive(ref iPEndPoint);
-
-            var message = await Task.FromResult(_sendGet.FormingMessageForGet(buffer).Result);
+            Message? message = null;
+            try
+            {
+                byte[] buffer = udpClient.Receive(ref iPEndPoint);
+                
+                message = await Task.FromResult(_sendGet.FormingMessageForGet(buffer).Result);
+                
+                if (_ct.IsCancellationRequested)
+                {
+                    udpClient.Dispose();
+                    return;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("UdpClient закрыт.");
+            }
 
             if (message is null)
             {
