@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Network.SDK", "NetWork\Netw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Network.Server", "NetWork\Network.Server\Network.Server.csproj", "{5E539A9F-BA05-460B-888F-ABC5B8C3DD47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFSeminar", "EFSeminar\EFSeminar.csproj", "{28AE3FE5-6CDC-4CF2-B54E-8C23D9CE19A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFSeminar", "EFSeminar\EFSeminar.csproj", "{28AE3FE5-6CDC-4CF2-B54E-8C23D9CE19A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network.Client.Test", "Network.Client.Test\Network.Client.Test.csproj", "{838E2E28-9DF6-4DCC-9E1B-CCDD90C8E2B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{28AE3FE5-6CDC-4CF2-B54E-8C23D9CE19A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28AE3FE5-6CDC-4CF2-B54E-8C23D9CE19A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28AE3FE5-6CDC-4CF2-B54E-8C23D9CE19A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838E2E28-9DF6-4DCC-9E1B-CCDD90C8E2B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838E2E28-9DF6-4DCC-9E1B-CCDD90C8E2B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838E2E28-9DF6-4DCC-9E1B-CCDD90C8E2B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838E2E28-9DF6-4DCC-9E1B-CCDD90C8E2B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{82608B7F-9683-4FD8-8647-63A2503A616A} = {4B5DE4BE-B656-453B-891C-F510EE38C55B}
 		{5E539A9F-BA05-460B-888F-ABC5B8C3DD47} = {4B5DE4BE-B656-453B-891C-F510EE38C55B}
 		{28AE3FE5-6CDC-4CF2-B54E-8C23D9CE19A8} = {4B5DE4BE-B656-453B-891C-F510EE38C55B}
+		{838E2E28-9DF6-4DCC-9E1B-CCDD90C8E2B7} = {4B5DE4BE-B656-453B-891C-F510EE38C55B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC616B83-39CB-4EE1-9485-71FACA80BD2C}
