@@ -60,8 +60,8 @@ namespace ASP.Net.Application.Controllers
         public IActionResult SaveProduct([FromQuery]
             string name,
             string description,
-            Guid categoryId,
-            Guid storageId)
+            Guid? categoryId,
+            Guid? storageId)
         {
             Guid result = Guid.Empty;
 
@@ -80,7 +80,7 @@ namespace ASP.Net.Application.Controllers
                             StorageId = storageId
                         };
 
-                        context.Add(product);
+                        context.Products.Add(product);
                         context.SaveChanges();
                         result = product.Id;
 

@@ -2,6 +2,6 @@
 {
     public class StorageEntity : EntityBase
     {
-        public virtual IEnumerable<ProductEntity> Products { get; set; }
+        public virtual List<ProductEntity> Products { get; set; }
     }
 }
