@@ -12,6 +12,7 @@ namespace Network.Server
         IPEndPoint iPEndPoint;
         private readonly int _maxCountUsers;
         private readonly CancellationToken _ct;
+        public bool receiveFlag;
 
         public Server(int maxCountUsers, CancellationToken ct = default)
         {
@@ -21,7 +22,7 @@ namespace Network.Server
 
         public void Start()
         {
-            udpClient = new UdpClient(12345);
+            udpClient ??= new UdpClient(12345);
             iPEndPoint = new IPEndPoint(IPAddress.Any, 0);
             LoopClients();
         }
@@ -40,6 +41,7 @@ namespace Network.Server
             Message? message = null;
             try
             {
+                receiveFlag = true;
                 byte[] buffer = udpClient.Receive(ref iPEndPoint);
                 
                 message = await Task.FromResult(_sendGet.FormingMessageForGet(buffer).Result);

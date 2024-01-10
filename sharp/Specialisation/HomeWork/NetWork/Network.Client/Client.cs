@@ -10,7 +10,7 @@ namespace Network.Client
         private readonly IGetSend _sendGet = new GetSend();
         private string _ip = string.Empty;
         private readonly string _nickName;
-        private UdpClient udpClient;
+        private UdpClient udpClient = new UdpClient();
         private IPEndPoint iPEndPoint;
 
         public Client(string ip, string nickName)
@@ -21,7 +21,7 @@ namespace Network.Client
 
         public void Start()
         {
-            udpClient = new UdpClient();
+            udpClient ??= new UdpClient();
             iPEndPoint = new IPEndPoint(IPAddress.Parse(_ip), 12345);
             HandleCommunication();
         }
@@ -51,7 +51,7 @@ namespace Network.Client
             }
         }
 
-        async Task<bool> SendMessage(string[] parts)
+        public async Task<bool> SendMessage(string[] parts)
         {
             Message message = new Message(parts[1], new User(_nickName), new User(parts[0]));
 
