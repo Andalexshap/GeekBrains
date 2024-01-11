@@ -3,10 +3,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASP.Net.Application.SDK
 {
-    public class AppContext : DbContext
+    public class AppDbContext : DbContext
     {
+        private string _connectionString;// = @"Data Source=(local);Initial Catalog=ASP.Net.App;Persist Security Info=True;User ID=inway;Password=inway;Connect Timeout=30;TrustServerCertificate=True;";
+        public AppDbContext()
+        {
+
+        }
+
+        public AppDbContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
         /*
-         dotnet ef migrations add InitialCreate --context ProductsContext
+         dotnet ef migrations add InitialCreate --context AppDbContext
          dotnet ef database update
         */
         public DbSet<ProductEntity> Products { get; set; }
@@ -15,7 +25,7 @@ namespace ASP.Net.Application.SDK
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=ASP.Net.App;Persist Security Info=True;User ID=inway;Password=inway;Connect Timeout=30;TrustServerCertificate=True;")
+            optionsBuilder.UseSqlServer(_connectionString)
                 .UseLazyLoadingProxies();
         }
 
