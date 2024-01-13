@@ -10,5 +10,6 @@ namespace ASP.Net.Application.Interfaces
         void SetPrice(Guid ProductId, decimal price);
         void AddCount(Guid ProductId, int addCount);
         void DeleteProduct(Guid productId);
+        string GetProductReport();
     }
 }

@@ -1,35 +1,51 @@
-﻿using ASP.Net.Application.Interfaces;
+﻿using System.Text;
+using ASP.Net.Application.Interfaces;
 using ASP.Net.Application.SDK.Models;
-using ASP.Net.Application.SDK.Utils;
+using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ASP.Net.Application.Services
 {
     public class ProductService : IProductService
     {
+        private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
         private readonly SDK.AppDbContext _context;
 
-        public ProductService(SDK.AppDbContext context)
+        public ProductService(SDK.AppDbContext context, IMemoryCache cache, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
+            _cache = cache;
         }
         public IEnumerable<ProductDto> GetProducts()
         {
-            var products = new List<ProductDto>();
+            if (_cache.TryGetValue("products", out IEnumerable<ProductDto> products))
+                return products;
 
             using (_context)
             {
-                var dto = _context.Products.Select(x => x.ConvertToDto());
-                products.AddRange(dto);
+                var productsDto = _context.Products.Select(x => _mapper.Map<ProductDto>(x)).ToList();
+
+                _cache.Set("products", productsDto);
+
+                return productsDto;
             }
-            return products;
         }
 
 
         public ProductDto? GetProduct(Guid id)
         {
+            if (_cache.TryGetValue("products", out IEnumerable<ProductDto> products))
+            {
+                var product = products.FirstOrDefault(x => x.Id == id);
+                if (product != null) return product;
+            }
+
             using (_context)
             {
-                return _context.Products.FirstOrDefault(x => x.Id == id)?.ConvertToDto();
+                var entitty = _context.Products.FirstOrDefault(x => x.Id == id);
+                return _mapper.Map<ProductDto>(entitty);
             }
         }
 
@@ -42,12 +58,14 @@ namespace ASP.Net.Application.Services
             {
                 if (!_context.Products.Any(x => x.Name.ToLower().Equals(product.Name.ToLower())))
                 {
-                    var entity = product.ConvertToEntity();
+                    var entity = _mapper.Map<ProductEntity>(product);
                     _context.Products.Add(entity);
                     _context.SaveChanges();
+                    _cache.Remove("products");
+                    return entity.Id;
                 }
             }
-            return (Guid)product.Id;
+            return Guid.Empty;
         }
 
         public void SetPrice(Guid ProductId, decimal price)
@@ -59,6 +77,7 @@ namespace ASP.Net.Application.Services
                 {
                     product.Price = price;
                     _context.SaveChanges();
+                    _cache.Remove("products");
                 }
             }
         }
@@ -72,6 +91,7 @@ namespace ASP.Net.Application.Services
                 {
                     product.Cost += (uint)addCount;
                     _context.SaveChanges();
+                    _cache.Remove("products");
                 }
             }
         }
@@ -85,8 +105,26 @@ namespace ASP.Net.Application.Services
                 {
                     _context.Products.Remove(product);
                     _context.SaveChanges();
+                    _cache.Remove("products");
                 }
             }
+        }
+        public string GetProductReport()
+        {
+            var products = _context.Products.Select(x => _mapper.Map<ProductDto>(x)).ToList();
+
+            return GetSCV(products);
+        }
+
+        private string GetSCV(IEnumerable<ProductDto> products)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var product in products)
+            {
+                sb.AppendLine(product.Name + ";" + product.Cost + "/" + product.Price + "\n");
+            }
+            return sb.ToString();
         }
     }
 }

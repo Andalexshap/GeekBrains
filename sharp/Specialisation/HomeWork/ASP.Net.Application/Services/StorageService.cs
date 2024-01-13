@@ -1,28 +1,51 @@
 ﻿using ASP.Net.Application.Interfaces;
 using ASP.Net.Application.SDK.Models;
-using ASP.Net.Application.SDK.Utils;
+using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ASP.Net.Application.Services
 {
     public class StorageService : IStorageService
     {
+        private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
         private readonly SDK.AppDbContext _context;
 
-        public StorageService(SDK.AppDbContext context)
+        public StorageService(SDK.AppDbContext context, IMemoryCache cache, IMapper mapper)
         {
+            _cache = cache;
+            _mapper = mapper;
             _context = context;
         }
 
         public IEnumerable<StorageDto> GetStorages()
         {
+            if (_cache.TryGetValue("categories", out IEnumerable<StorageDto> storages))
+                return storages;
+
             using (_context)
-                return _context.Storages.Select(x => x.ConvertToDto()).ToList();
+            {
+                var storagesDto = _context.Storages.Select(x => _mapper.Map<StorageDto>(x)).ToList();
+                _cache.Set("storages", storagesDto);
+
+                return storagesDto;
+            }
         }
 
         public StorageDto? GetStorage(Guid id)
         {
+            if (_cache.TryGetValue("storages", out IEnumerable<StorageDto> storages))
+            {
+                var storage = storages.FirstOrDefault(x => x.Id == id);
+                if (storage != null) return storage;
+            }
+
             using (_context)
-                return _context.Storages.FirstOrDefault(x => x.Id == id)?.ConvertToDto();
+            {
+                var storage = _context.Storages.FirstOrDefault(x => x.Id == id);
+
+                return _mapper.Map<StorageDto>(storage);
+            }
         }
 
         public Guid SaveCategory(StorageDto storage)
@@ -33,10 +56,12 @@ namespace ASP.Net.Application.Services
                     storage.Id = Guid.NewGuid();
                 if (!_context.Storages.Any(x => x.Name.ToLower().Equals(storage.Name.ToLower())))
                 {
-                    _context.Storages.Add(storage.ConvertToEntity());
+                    var entity = _mapper.Map<StorageEntity>(storage);
+                    _context.Storages.Add(entity);
                     _context.SaveChanges();
+                    _cache.Remove("storages");
 
-                    return (Guid)storage.Id;
+                    return entity.Id;
                 }
                 return Guid.Empty;
             }
@@ -56,6 +81,9 @@ namespace ASP.Net.Application.Services
                     category.Products.Add(product);
                     product.StorageId = storageId;
                     _context.SaveChanges();
+
+                    _cache.Remove("storages");
+                    _cache.Remove("products");
 
                     return true;
                 }
@@ -80,6 +108,9 @@ namespace ASP.Net.Application.Services
                         });
 
                     _context.SaveChanges();
+
+                    _cache.Remove("storages");
+                    _cache.Remove("products");
 
                     return true;
                 }

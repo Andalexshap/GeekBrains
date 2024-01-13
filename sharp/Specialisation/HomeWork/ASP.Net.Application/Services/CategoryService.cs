@@ -1,33 +1,55 @@
 ﻿using ASP.Net.Application.Interfaces;
 using ASP.Net.Application.SDK.Models;
-using ASP.Net.Application.SDK.Utils;
+using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ASP.Net.Application.Services
 {
     public class CategoryService : ICategoryService
     {
+        private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
         private readonly SDK.AppDbContext _context;
 
-        public CategoryService(SDK.AppDbContext context)
+        public CategoryService(SDK.AppDbContext context, IMemoryCache cache, IMapper mapper)
         {
+            _cache = cache;
+            _mapper = mapper;
             _context = context;
         }
 
         public IEnumerable<CategoryDto> GetCategories()
         {
+            if (_cache.TryGetValue("categories", out IEnumerable<CategoryDto> categories))
+                return categories;
+
             using (_context)
-                return _context.Categories.Select(x => x.ConvertToDto()).ToList();
+            {
+                var categoriesDto = _context.Categories.Select(x => _mapper.Map<CategoryDto>(x)).ToList();
+
+                _cache.Set("categories", categoriesDto);
+
+                return categoriesDto;
+            }
         }
 
         public CategoryDto? GetCategory(Guid id)
         {
+            if (_cache.TryGetValue("categories", out IEnumerable<CategoryDto> categories))
+            {
+                var category = categories.FirstOrDefault(x => x.Id == id);
+                if (category != null) return category;
+            }
+
             using (_context)
-                return _context.Categories.FirstOrDefault(x => x.Id == id)?.ConvertToDto();
+            {
+                var category = _context.Categories.FirstOrDefault(x => x.Id == id);
+                return _mapper.Map<CategoryDto>(category);
+            }
         }
 
         public Guid SaveCategory(CategoryDto category)
         {
-
             using (_context)
             {
                 if (!_context.Categories.Any(x => x.Name.ToLower().Equals(category.Name.ToLower())))
@@ -35,9 +57,12 @@ namespace ASP.Net.Application.Services
                     if (category.Id == null)
                         category.Id = Guid.NewGuid();
 
-                    _context.Categories.Add(category.ConvertToEntity());
+                    var entity = _mapper.Map<CategoryEntity>(category);
+                    _context.Categories.Add(entity);
                     _context.SaveChanges();
-                    return (Guid)category.Id;
+
+                    _cache.Remove("category");
+                    return entity.Id;
                 }
             }
             return Guid.Empty;
@@ -58,6 +83,8 @@ namespace ASP.Net.Application.Services
                     product.CategoryId = categoryId;
                     _context.SaveChanges();
 
+                    _cache.Remove("category");
+                    _cache.Remove("products");
                     return true;
                 }
                 return false;
@@ -81,6 +108,9 @@ namespace ASP.Net.Application.Services
                         });
 
                     _context.SaveChanges();
+
+                    _cache.Remove("categories");
+                    _cache.Remove("products");
 
                     return true;
                 }

@@ -18,86 +18,51 @@ namespace ASP.Net.Application.Controllers
         [HttpGet("products")]
         public IActionResult GetProducts()
         {
-            try
-            {
-                var response = _productService.GetProducts();
-                return Ok(response);
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+
+            var response = _productService.GetProducts();
+            return Ok(response);
         }
 
         [HttpGet("product/{id}")]
         public IActionResult GetProduct(Guid id)
         {
-            try
-            {
-                var product = _productService.GetProduct(id);
-                return Ok(product);
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-            return StatusCode(404);
+            var product = _productService.GetProduct(id);
+            return Ok(product);
         }
 
         [HttpPost("product")]
         public IActionResult SaveProduct([FromBody] ProductDto product)
         {
-            try
-            {
-                var result = _productService.SaveProduct(product);
-                return Ok(result);
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+            var result = _productService.SaveProduct(product);
+            return Ok(result);
         }
 
         [HttpPost("set_price")]
         public IActionResult SetPrice([FromQuery] Guid productId, decimal price)
         {
-            try
-            {
-                _productService.SetPrice(productId, price);
-                return Ok();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+            _productService.SetPrice(productId, price);
+            return Ok();
         }
 
         [HttpPost("add_count")]
         public IActionResult AddCount([FromQuery] Guid productId, int newCount)
         {
-            try
-            {
-                _productService.AddCount(productId, newCount);
-                return Ok();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+            _productService.AddCount(productId, newCount);
+            return Ok();
         }
 
         [HttpDelete("{productId}")]
         public IActionResult DeleteProduct(Guid productId)
         {
-            try
-            {
-                _productService.DeleteProduct(productId);
-                return Ok();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+            _productService.DeleteProduct(productId);
+            return Ok();
+        }
+
+        [HttpGet("report_SCV")]
+        public IActionResult GetProductReport()
+        {
+            var content = _productService.GetProductReport();
+            return File(new System.Text.UTF8Encoding().GetBytes(content), "text/csv", "report.csv");
         }
     }
 }
