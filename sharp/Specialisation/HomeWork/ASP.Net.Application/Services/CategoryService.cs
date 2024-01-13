@@ -80,7 +80,6 @@ namespace ASP.Net.Application.Services
                     _context.Categories.SingleOrDefault(x => x.Products.Select(x => x.Id).Contains(productId))?.Products.Remove(product);
 
                     category.Products.Add(product);
-                    product.CategoryId = categoryId;
                     _context.SaveChanges();
 
                     _cache.Remove("category");
@@ -99,13 +98,6 @@ namespace ASP.Net.Application.Services
                 if (category != null)
                 {
                     _context.Categories.Remove(category);
-
-                    _context.Products.Where(x => x.CategoryId == categoryId).ToList()
-                        .ForEach(x =>
-                        {
-                            x.CategoryId = null;
-                            x.Category = null;
-                        });
 
                     _context.SaveChanges();
 

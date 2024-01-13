@@ -79,7 +79,6 @@ namespace ASP.Net.Application.Services
                     _context.Storages.SingleOrDefault(x => x.Products.Select(x => x.Id).Contains(productId))?.Products.Remove(product);
 
                     category.Products.Add(product);
-                    product.StorageId = storageId;
                     _context.SaveChanges();
 
                     _cache.Remove("storages");
@@ -99,13 +98,6 @@ namespace ASP.Net.Application.Services
                 if (storage != null)
                 {
                     _context.Storages.Remove(storage);
-
-                    _context.Products.Where(x => x.StorageId == storageId).ToList()
-                        .ForEach(x =>
-                        {
-                            x.StorageId = null;
-                            x.Storage = null;
-                        });
 
                     _context.SaveChanges();
 

@@ -48,12 +48,10 @@ namespace ASP.Net.Application.SDK
                 entity.Property(e => e.Price).IsRequired();
 
                 entity.HasOne(x => x.Category)
-                    .WithMany(x => x.Products)
-                    .HasForeignKey(x => x.CategoryId);
+                    .WithMany(x => x.Products);
 
                 entity.HasOne(x => x.Storage)
-                    .WithMany(x => x.Products)
-                    .HasForeignKey(x => x.StorageId);
+                    .WithMany(x => x.Products);
             });
 
             modelBuilder.Entity<CategoryEntity>(entity =>

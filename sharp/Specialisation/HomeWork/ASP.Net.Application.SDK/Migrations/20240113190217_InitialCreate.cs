@@ -23,6 +23,19 @@ namespace ASP.Net.Application.SDK.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryDto",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryDto", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Storages",
                 columns: table => new
                 {
@@ -43,7 +56,8 @@ namespace ASP.Net.Application.SDK.Migrations
                     Cost = table.Column<long>(type: "bigint", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    StorageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StorageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CategoryEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
@@ -51,16 +65,20 @@ namespace ASP.Net.Application.SDK.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Products_Categories_CategoryEntityId",
+                        column: x => x.CategoryEntityId,
                         principalTable: "Categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_CategoryDto_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "CategoryDto",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_Storages_StorageId",
                         column: x => x.StorageId,
                         principalTable: "Storages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -68,6 +86,11 @@ namespace ASP.Net.Application.SDK.Migrations
                 table: "Categories",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryEntityId",
+                table: "Products",
+                column: "CategoryEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -99,6 +122,9 @@ namespace ASP.Net.Application.SDK.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "CategoryDto");
 
             migrationBuilder.DropTable(
                 name: "Storages");

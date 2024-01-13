@@ -4,9 +4,7 @@
     {
         public uint Cost { get; set; }
         public decimal Price { get; set; }
-        public Guid? CategoryId { get; set; }
         public virtual CategoryDto? Category { get; set; }
-        public Guid? StorageId { get; set; }
         public virtual StorageEntity? Storage { get; set; }
     }
 }
