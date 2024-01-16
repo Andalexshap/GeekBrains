@@ -19,6 +19,8 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
 builder.Services.AddMemoryCache();
 
+
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 var config = new ConfigurationBuilder();
