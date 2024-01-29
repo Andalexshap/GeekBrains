@@ -40,13 +40,13 @@ namespace UserApi
                 entity.Property(e => e.Name)
                     .HasMaxLength(255);
 
-                entity.Property(e => e.Price).IsRequired();
+                entity.Property(e => e.Role).IsRequired();
 
-                entity.HasOne(x => x.Category)
-                    .WithMany(x => x.Products);
+                entity.HasOne(x => x.Role)
+                    .WithMany(x => x.Users);
 
-                entity.HasOne(x => x.Storage)
-                    .WithMany(x => x.Products);
+
             });
         }
+    }
 }
