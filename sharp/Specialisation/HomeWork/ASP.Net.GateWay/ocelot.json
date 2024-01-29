@@ -6,7 +6,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7121
+          "Port": 44391
         }
       ],
       "UpstreamPathTemplate": "/Main/{method}",
@@ -38,7 +38,7 @@
         {
           "Name": "Main Api",
           "Version": "v1",
-          "Url": "https://localhost:7121/swagger/v1/swagger.json"
+          "Url": "https://localhost:44391/swagger/v1/swagger.json"
         }
       ]
     },
