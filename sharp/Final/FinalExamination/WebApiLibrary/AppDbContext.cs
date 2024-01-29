@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApiLibrary.DataStore.Entities;
 
-namespace UserApi
+namespace WebApiLibrary
 {
     public partial class AppDbContext : DbContext
     {
@@ -19,6 +19,7 @@ namespace UserApi
          dotnet ef migrations add InitialCreate --context AppDbContext
          dotnet ef database update
         */
+        public DbSet<MessageEntity> Messages { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
 
@@ -28,6 +29,7 @@ namespace UserApi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<UserEntity>(entity =>
             {
                 entity.HasKey(x => x.Id);
@@ -40,12 +42,29 @@ namespace UserApi
                 entity.Property(e => e.Name)
                     .HasMaxLength(255);
 
-                entity.Property(e => e.Role).IsRequired();
-
-                entity.HasOne(x => x.Role)
+                entity.HasOne(x => x.RoleType)
                     .WithMany(x => x.Users);
 
+            });
 
+            modelBuilder.Entity<MessageEntity>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.HasIndex(x => x.SenderEmail).IsUnique();
+                entity.HasIndex(x => x.RecipientEmail).IsUnique();
+
+                entity.Property(e => e.Text)
+                    .HasMaxLength(1000);
+
+                entity.HasOne(x => x.Sender)
+                    .WithMany(x => x.SendMessages)
+                    .HasForeignKey(x => x.SenderEmail)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Recipient)
+                    .WithMany(x => x.ReceiveMessages)
+                    .HasForeignKey(x => x.RecipientEmail)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

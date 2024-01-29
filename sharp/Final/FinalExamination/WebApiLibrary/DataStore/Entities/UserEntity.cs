@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebApiLibrary.DataStore.Entities
+﻿namespace WebApiLibrary.DataStore.Entities
 {
     public class UserEntity
     {
         public Guid Id { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
+        public byte[] Password { get; set; }
+        public byte[] Salt { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        
-        [NotMapped]
-        public string RoleToString {
-            get => Role.Role.ToString();
-            set => RoleToString = value;
-        }
-
-        public virtual RoleEntity Role { get; set; }
+        public virtual List<MessageEntity> SendMessages { get; set; }
+        public virtual List<MessageEntity> ReceiveMessages { get; set; }
+        public virtual RoleEntity RoleType { get; set; }
     }
 }
