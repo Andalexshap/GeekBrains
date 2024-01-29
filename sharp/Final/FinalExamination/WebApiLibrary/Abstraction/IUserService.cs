@@ -5,7 +5,7 @@ namespace WebApiLibrary.Abstraction
     public interface IUserService
     {
 
-        UserResponse Aythentificate(LoginModel model);
+        UserResponse Authentificate(LoginModel model);
         UserResponse AddUser(RegistrationModel model);
         UserResponse AddAdmin(RegistrationModel model);
         UserResponse GetUsers();

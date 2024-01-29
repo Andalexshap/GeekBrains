@@ -1,39 +1,33 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using WebApiLibrary;
 using WebApiLibrary.Abstraction;
 using WebApiLibrary.DataStore.Entities;
 using WebApiLibrary.DataStore.Models;
-using WebApiLibrary.rsa;
 
 namespace UserApi.Services
 {
     public class UserService : IUserService
     {
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IConfiguration _configuration;
+        private readonly Func<AppDbContext> _context;
         private readonly IMapper _mapper;
-        private Account _account;
+        private readonly Account _account;
 
-        public UserService(Account account, IConfiguration configuration, IMapper mapper, IDbContextFactory<AppDbContext> contextFactory)
+        public UserService(IMapper mapper, Func<AppDbContext> context, Account account)
         {
-            _configuration = configuration;
             _mapper = mapper;
+            _context = context;
             _account = account;
-            _contextFactory = contextFactory;
         }
-        public async Task<UserResponse> Authentificate(LoginModel model)
+        public UserResponse Authentificate(LoginModel model)
         {
             UserEntity user = null;
 
-            var context = await _contextFactory.CreateDbContextAsync();
+            using (var context = _context())
+                user = context.Users.Include(x => x.RoleType).FirstOrDefault(x => x.Email == model.Email);
 
-            user = await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == model.Email);
             if (user == null)
             {
                 return UserResponse.UserNotFound();
@@ -41,10 +35,9 @@ namespace UserApi.Services
 
             if (CheckPassword(user.Salt, model.Password, user.Password))
             {
-                _account = _mapper.Map<Account>(user);
-                _account.RefreshToken(GenerateToken(_account));
-
-                return UserResponse.OK();
+                var response = UserResponse.OK();
+                response.Users.Add(_mapper.Map<UserModel>(user));
+                return response;
             }
 
             return UserResponse.PasswordWrong();
@@ -52,9 +45,10 @@ namespace UserApi.Services
 
         public UserResponse AddAdmin(RegistrationModel model)
         {
-            using (_context)
+            using (var context = _context())
             {
-                var userExist = _context.Users.Count(x => x.RoleType.Role == UserRole.Administrator);
+                var userExist = context.Users.Count(x => x.RoleType.Role == UserRole.Administrator);
+
                 if (userExist > 0)
                     return UserResponse.AddAdminError();
 
@@ -65,18 +59,17 @@ namespace UserApi.Services
                     Role = UserRole.Administrator
                 };
 
-                _context.Users.Add(entity);
-                _context.SaveChanges();
+                context.Users.AddAsync(entity);
+                context.SaveChanges();
             }
-
             return UserResponse.OK();
         }
 
         public UserResponse AddUser(RegistrationModel model)
         {
-            using (_context)
+            using (var context = _context())
             {
-                var userExist = _context.Users.FirstOrDefault(x => x.Email == model.Email.ToLower());
+                var userExist = context.Users.FirstOrDefault(x => x.Email == model.Email.ToLower());
 
                 if (userExist != null)
                     return UserResponse.UserExist();
@@ -84,9 +77,10 @@ namespace UserApi.Services
                 var entity = _mapper.Map<UserEntity>(model);
                 entity.RoleType = new RoleEntity { Role = UserRole.User };
 
-                _context.Users.Add(entity);
-                _context.SaveChanges();
+                context.Users.Add(entity);
+                context.SaveChanges();
             }
+
 
             return UserResponse.OK();
         }
@@ -97,9 +91,9 @@ namespace UserApi.Services
             if (_account.Role != UserRole.Administrator)
                 return UserResponse.AccessDenied();
 
-            using (_context)
+            using (var context = _context())
             {
-                var query = _context.Users.AsQueryable();
+                var query = context.Users.AsQueryable();
                 if (!string.IsNullOrEmpty(email))
                     query = query.Where(x => x.Email == email);
                 if (userId.HasValue)
@@ -118,10 +112,9 @@ namespace UserApi.Services
                         Errors = new List<ErrorModel> { new ErrorModel { Message = "Нельзя удалить администратора" } }
                     };
 
-                _context.Users.Remove(userExist);
-                _context.SaveChanges();
+                context.Users.Remove(userExist);
+                context.SaveChanges();
             }
-
             return UserResponse.OK();
         }
 
@@ -129,9 +122,9 @@ namespace UserApi.Services
         {
             var user = new UserEntity();
 
-            using (_context)
+            using (var context = _context())
             {
-                var query = _context.Users.AsQueryable();
+                var query = context.Users.AsQueryable();
                 if (!string.IsNullOrEmpty(email))
                     query = query.Where(x => x.Email == email);
                 if (userId.HasValue)
@@ -160,10 +153,8 @@ namespace UserApi.Services
             if (_account.Role != UserRole.Administrator)
                 return UserResponse.AccessDenied();
 
-            using (_context)
-            {
-                users.AddRange(_context.Users.Select(x => _mapper.Map<UserModel>(x)).ToList());
-            }
+            using (var context = _context())
+                users.AddRange(context.Users.Select(x => _mapper.Map<UserModel>(x)).ToList());
 
             return new UserResponse
             {
@@ -172,24 +163,6 @@ namespace UserApi.Services
             };
         }
 
-        private string GenerateToken(Account model)
-        {
-            var key = new RsaSecurityKey(RSAService.GetPrivateKey());
-            var credential = new SigningCredentials(key, SecurityAlgorithms.RsaSha256Signature);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Email, model.Email),
-                new Claim(ClaimTypes.Role, model.Role.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString())
-            };
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(60),
-                signingCredentials: credential);
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
 
         private bool CheckPassword(byte[] salt, string password, byte[] dbPassword)
         {
