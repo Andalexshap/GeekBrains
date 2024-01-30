@@ -51,8 +51,8 @@ namespace WebApiLibrary.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SenderEmail = table.Column<Guid>(type: "uuid", nullable: false),
-                    RecipientEmail = table.Column<Guid>(type: "uuid", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecipientId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsRead = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false)
@@ -61,29 +61,29 @@ namespace WebApiLibrary.Migrations
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_RecipientEmail",
-                        column: x => x.RecipientEmail,
+                        name: "FK_Messages_Users_RecipientId",
+                        column: x => x.RecipientId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_SenderEmail",
-                        column: x => x.SenderEmail,
+                        name: "FK_Messages_Users_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_RecipientEmail",
+                name: "IX_Messages_RecipientId",
                 table: "Messages",
-                column: "RecipientEmail",
+                column: "RecipientId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_SenderEmail",
+                name: "IX_Messages_SenderId",
                 table: "Messages",
-                column: "SenderEmail",
+                column: "SenderId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

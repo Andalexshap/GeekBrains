@@ -18,9 +18,6 @@ namespace WebApiLibrary.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.11")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -37,10 +34,10 @@ namespace WebApiLibrary.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("RecipientEmail")
+                    b.Property<Guid>("RecipientId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SenderEmail")
+                    b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -50,10 +47,10 @@ namespace WebApiLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipientEmail")
+                    b.HasIndex("RecipientId")
                         .IsUnique();
 
-                    b.HasIndex("SenderEmail")
+                    b.HasIndex("SenderId")
                         .IsUnique();
 
                     b.ToTable("Messages");
@@ -118,13 +115,13 @@ namespace WebApiLibrary.Migrations
                 {
                     b.HasOne("WebApiLibrary.DataStore.Entities.UserEntity", "Recipient")
                         .WithMany("ReceiveMessages")
-                        .HasForeignKey("RecipientEmail")
+                        .HasForeignKey("RecipientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("WebApiLibrary.DataStore.Entities.UserEntity", "Sender")
                         .WithMany("SendMessages")
-                        .HasForeignKey("SenderEmail")
+                        .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

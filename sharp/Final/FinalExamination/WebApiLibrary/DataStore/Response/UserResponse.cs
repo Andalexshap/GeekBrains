@@ -3,7 +3,8 @@ namespace WebApiLibrary.DataStore.Models
 {
     public class UserResponse
     {
-        public bool Result { get; set; }
+        public bool IsSuccess { get; set; }
+        public Guid? UserId { get; set; }
         public List<ErrorModel> Errors = new List<ErrorModel>();
         public List<UserModel> Users = new List<UserModel>();
         public string Token { get; set; }
@@ -12,7 +13,7 @@ namespace WebApiLibrary.DataStore.Models
         {
             return new UserResponse
             {
-                Result = false,
+                IsSuccess = false,
                 Errors = new List<ErrorModel> {
                     new ErrorModel
                     {
@@ -26,7 +27,7 @@ namespace WebApiLibrary.DataStore.Models
         {
             return new UserResponse
             {
-                Result = false,
+                IsSuccess = false,
                 Errors = new List<ErrorModel> {
                     new ErrorModel
                     {
@@ -41,7 +42,7 @@ namespace WebApiLibrary.DataStore.Models
         {
             return new UserResponse
             {
-                Result = false,
+                IsSuccess = false,
                 Errors = new List<ErrorModel> {
                     new ErrorModel
                     {
@@ -56,7 +57,7 @@ namespace WebApiLibrary.DataStore.Models
         {
             return new UserResponse
             {
-                Result = false,
+                IsSuccess = false,
                 Errors = new List<ErrorModel> {
                     new ErrorModel
                     {
@@ -70,7 +71,7 @@ namespace WebApiLibrary.DataStore.Models
         {
             return new UserResponse
             {
-                Result = false,
+                IsSuccess = false,
                 Errors = new List<ErrorModel> {
                     new ErrorModel
                     {
@@ -84,7 +85,7 @@ namespace WebApiLibrary.DataStore.Models
         {
             return new UserResponse
             {
-                Result = true,
+                IsSuccess = true,
             };
         }
     }

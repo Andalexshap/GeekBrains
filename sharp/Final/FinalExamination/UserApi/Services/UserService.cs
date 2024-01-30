@@ -45,6 +45,7 @@ namespace UserApi.Services
 
         public UserResponse AddAdmin(RegistrationModel model)
         {
+            var response = UserResponse.OK();
             using (var context = _context())
             {
                 var userExist = context.Users.Count(x => x.RoleType.Role == UserRole.Administrator);
@@ -59,14 +60,18 @@ namespace UserApi.Services
                     Role = UserRole.Administrator
                 };
 
-                context.Users.AddAsync(entity);
+                context.Users.Add(entity);
                 context.SaveChanges();
+
+                response.UserId = entity.Id;
             }
-            return UserResponse.OK();
+
+            return response;
         }
 
         public UserResponse AddUser(RegistrationModel model)
         {
+            var response = UserResponse.OK();
             using (var context = _context())
             {
                 var userExist = context.Users.FirstOrDefault(x => x.Email == model.Email.ToLower());
@@ -79,10 +84,10 @@ namespace UserApi.Services
 
                 context.Users.Add(entity);
                 context.SaveChanges();
+
+                response.UserId = entity.Id;
             }
-
-
-            return UserResponse.OK();
+            return response;            
         }
 
 
@@ -93,7 +98,7 @@ namespace UserApi.Services
 
             using (var context = _context())
             {
-                var query = context.Users.AsQueryable();
+                var query = context.Users.Include(x => x.RoleType).AsQueryable();
                 if (!string.IsNullOrEmpty(email))
                     query = query.Where(x => x.Email == email);
                 if (userId.HasValue)
@@ -108,7 +113,7 @@ namespace UserApi.Services
                 if (userExist.RoleType.Role == UserRole.Administrator)
                     return new UserResponse
                     {
-                        Result = false,
+                        IsSuccess = false,
                         Errors = new List<ErrorModel> { new ErrorModel { Message = "Нельзя удалить администратора" } }
                     };
 
@@ -124,7 +129,7 @@ namespace UserApi.Services
 
             using (var context = _context())
             {
-                var query = context.Users.AsQueryable();
+                var query = context.Users.Include(x => x.RoleType).AsQueryable();
                 if (!string.IsNullOrEmpty(email))
                     query = query.Where(x => x.Email == email);
                 if (userId.HasValue)
@@ -139,7 +144,7 @@ namespace UserApi.Services
             if (_account.Role == UserRole.Administrator || _account.Id == userId)
                 return new UserResponse
                 {
-                    Result = true,
+                    IsSuccess = true,
                     Users = new List<UserModel> { _mapper.Map<UserModel>(user) }
                 };
 
@@ -154,11 +159,11 @@ namespace UserApi.Services
                 return UserResponse.AccessDenied();
 
             using (var context = _context())
-                users.AddRange(context.Users.Select(x => _mapper.Map<UserModel>(x)).ToList());
+                users.AddRange(context.Users.Include(x => x.RoleType).Select(x => _mapper.Map<UserModel>(x)).ToList());
 
             return new UserResponse
             {
-                Result = true,
+                IsSuccess = true,
                 Users = users
             };
         }
