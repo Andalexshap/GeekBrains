@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,38 +33,47 @@ namespace UserApi.Controllers
         [HttpPost("login")]
         public ActionResult Login([Description("Аутентификация пользователя"), FromBody] LoginModel model)
         {
+            if (!IsValid(model.Email))
+                return BadRequest($"Email:'{model.Email}' - Invalid Format");
+
             if (_account.GetAccessToken() != null)
                 return BadRequest("Вы уже вошли в систему");
             var response = _userService.Authentificate(model);
-            if (!response.Result)
+            if (!response.IsSuccess)
                 return NotFound(response.Errors.FirstOrDefault()?.Message);
 
             _account.Login(response.Users[0]);
             _account.RefreshToken(GenerateToken(_account));
 
-            return Ok();
+            return Ok(_account.GetAccessToken());
         }
 
         [Authorize(Roles = "Administrator")]
         [HttpPost("add")]
         public ActionResult AddUser(RegistrationModel model)
         {
+            if (!IsValid(model.Email))
+                return BadRequest($"Email:'{model.Email}' - Invalid Format");
+
             var response = _userService.AddUser(model);
-            if (!response.Result)
+            if (!response.IsSuccess)
                 return BadRequest(response.Errors.FirstOrDefault().Message);
 
-            return Ok();
+            return Ok(response.UserId);
         }
 
         [AllowAnonymous]
         [HttpPost("add_admin")]
         public ActionResult AddAdmin(RegistrationModel model)
         {
+            if (!IsValid(model.Email))
+                return BadRequest($"Email:'{model.Email}' - Invalid Format");
+
             var response = _userService.AddAdmin(model);
-            if (!response.Result)
+            if (!response.IsSuccess)
                 return BadRequest(response.Errors.FirstOrDefault().Message);
 
-            return Ok();
+            return Ok(response.UserId);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -71,7 +81,7 @@ namespace UserApi.Controllers
         public ActionResult GetUsers()
         {
             var response = _userService.GetUsers();
-            if (!response.Result)
+            if (!response.IsSuccess)
                 return BadRequest(response.Errors.FirstOrDefault().Message);
 
             return Ok(response.Users);
@@ -79,10 +89,10 @@ namespace UserApi.Controllers
 
         [Authorize(Roles = "Administrator")]
         [HttpPost]
-        public ActionResult GetUser([FromBody] Guid? userId, string? email)
+        public ActionResult GetUser(Guid? userId, string? email)
         {
             var response = _userService.GetUser(userId, email);
-            if (!response.Result)
+            if (!response.IsSuccess)
                 return BadRequest(response.Errors.FirstOrDefault().Message);
 
             return Ok(response.Users);
@@ -93,7 +103,7 @@ namespace UserApi.Controllers
         public ActionResult DeleteUser(Guid? userId, string? email)
         {
             var response = _userService.DeleteUser(userId, email);
-            if (!response.Result)
+            if (!response.IsSuccess)
                 return BadRequest(response.Errors.FirstOrDefault().Message);
 
             return Ok();
@@ -114,7 +124,7 @@ namespace UserApi.Controllers
             {
                 new Claim(ClaimTypes.Email, model.Email),
                 new Claim(ClaimTypes.Role, model.Role.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString())
+                new Claim("UserId", model.Id.ToString())
             };
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
@@ -123,6 +133,20 @@ namespace UserApi.Controllers
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: credential);
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private bool IsValid(string emailaddress)
+        {
+            try
+            {
+                MailAddress m = new MailAddress(emailaddress);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
     }
 }

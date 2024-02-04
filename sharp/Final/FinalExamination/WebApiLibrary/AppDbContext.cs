@@ -50,20 +50,22 @@ namespace WebApiLibrary
             modelBuilder.Entity<MessageEntity>(entity =>
             {
                 entity.HasKey(x => x.Id);
-                entity.HasIndex(x => x.SenderEmail).IsUnique();
-                entity.HasIndex(x => x.RecipientEmail).IsUnique();
+                entity.HasIndex(x => x.SenderId).IsUnique();
+                entity.HasIndex(x => x.RecipientId).IsUnique();
 
                 entity.Property(e => e.Text)
                     .HasMaxLength(1000);
 
                 entity.HasOne(x => x.Sender)
                     .WithMany(x => x.SendMessages)
-                    .HasForeignKey(x => x.SenderEmail)
+                    .HasForeignKey(x => x.SenderId)
+                    .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(x => x.Recipient)
                     .WithMany(x => x.ReceiveMessages)
-                    .HasForeignKey(x => x.RecipientEmail)
+                    .HasForeignKey(x => x.RecipientId)
+                    .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
             });
         }
