@@ -29,4 +29,8 @@
     <ProjectReference Include="..\WebApiLibrary\WebApiLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
