@@ -1,0 +1,98 @@
+﻿namespace Tehnopoint.Task19
+{
+    internal class Solution
+    {
+        public void Test()
+        {
+            int count = int.Parse(Console.ReadLine());
+
+            for (int i = 0; i < count; i++)
+            {
+                var d = Console.ReadLine();
+                var a = Console.ReadLine().Select(x => x.ToString()).ToList();
+                bool isValid = true;
+
+                while (a.Count > 0)
+                {
+                    var xCount = a.Where(x => x == "X").Count();
+                    var yCount = a.Where(x => x == "Y").Count();
+                    var zCount = a.Where(x => x == "Z").Count();
+
+                    var firstValue = a.First();
+                    a.Remove(firstValue);
+
+                    switch (firstValue)
+                    {
+                        case "X":
+                            {
+                                int secondValue = -1;
+                                if (zCount > yCount)
+                                {
+                                    secondValue = a.IndexOf("Z");
+                                    if (secondValue == -1)
+                                        secondValue = a.LastIndexOf("Y");
+
+                                }
+                                else
+                                {
+                                    secondValue = a.LastIndexOf("Y");
+                                    if (secondValue == -1)
+                                        secondValue = a.IndexOf("Z");
+                                }
+
+                                if (secondValue != -1)
+                                {
+                                    a.RemoveAt(secondValue);
+                                }
+                                else
+                                {
+                                    isValid = false;
+                                }
+                                break;
+                            }
+                        case "Y":
+                            {
+                                int secondValue = -1;
+                                if (zCount > xCount)
+                                {
+                                    secondValue = a.LastIndexOf("Z");
+                                    if (secondValue == -1)
+                                        secondValue = a.IndexOf("X");
+
+                                }
+                                else
+                                {
+                                    secondValue = a.IndexOf("X");
+                                    if (secondValue == -1)
+                                        secondValue = a.LastIndexOf("Z");
+
+                                }
+
+                                if (secondValue != -1)
+                                {
+                                    a.RemoveAt(secondValue);
+                                }
+                                else
+                                {
+                                    isValid = false;
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                isValid = false;
+                                break;
+                            }
+                    }
+
+                    if (!isValid)
+                    {
+                        break;
+                    }
+                }
+
+                Console.WriteLine(isValid ? "Yes" : "No");
+            }
+        }
+    }
+}

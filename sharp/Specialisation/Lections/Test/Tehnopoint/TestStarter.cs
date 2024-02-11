@@ -48,14 +48,16 @@ namespace Tehnopoint
             var resultReader = new StringReader(result);
             bool isValid = true;
             string? answerLine;
+            int answerCount = 0;
             while ((answerLine = answerReader.ReadLine()) != null)
             {
+                answerCount++;
                 string? resultLine = resultReader.ReadLine();
                 if (answerLine != resultLine)
                 {
                     isValid = false;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Answer: {answerLine} | Result: {resultLine}");
+                    Console.WriteLine($"Answer: {answerLine} | Result: {resultLine} | Строка{answerCount}");
                     Console.ResetColor();
                 }
             }

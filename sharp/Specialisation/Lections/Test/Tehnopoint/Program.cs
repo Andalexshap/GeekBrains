@@ -1,4 +1,4 @@
 ﻿using Tehnopoint;
 
 var t = new TestStarter();
-t.StartTest(5);
+t.StartTest(15);
