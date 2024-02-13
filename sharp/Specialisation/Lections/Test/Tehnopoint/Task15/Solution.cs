@@ -7,8 +7,8 @@ namespace Tehnopoint.Task15
         public class A
         {
             public string dir { get; set; }
-            public List<string> files { get; set; } = new List<string>();
-            public List<A> folders { get; set; } = new List<A>();
+            public List<string> files { get; set; }
+            public List<A> folders { get; set; }
         }
 
         public void Test()
@@ -24,53 +24,33 @@ namespace Tehnopoint.Task15
                 {
                     json += Console.ReadLine();
                 }
-                var s = JsonSerializer.Deserialize<A>(json, new JsonSerializerOptions { MaxDepth = 1025 });
+                var s = JsonSerializer.Deserialize<A>(json, new JsonSerializerOptions { MaxDepth = 2048 });
                 var count = 0;
-                if (s.files.Any(x => x.EndsWith(".hack")))
-                {
-                    count += s.files.Count;
-                    count += Check(s.folders, true);
-                }
-                else
-                {
-                    count += Check(s.folders, false);
-                }
+                Check(s, false);
 
                 Console.WriteLine(count);
-            }
-        }
 
-        public int Check(List<A> a, bool all)
-        {
-            int count = 0;
-            if (all)
-            {
-                foreach (var dir in a)
+                void Check(A a, bool IsHack)
                 {
-                    count += dir.files.Count;
-                    count += Check(dir.folders, true);
-                }
-            }
-            else
-            {
-                foreach (var item in a)
-                {
-                    if (item.files.Any(x => x.EndsWith(".hack")))
+                    if (IsHack)
                     {
-                        count += item.files.Count + Check(item.folders, true);
+                        count += a.files?.Count ?? default;
+                        a.folders?.ForEach(x => Check(x, true));
                     }
                     else
                     {
-                        foreach (var subDirectory in item.folders)
+                        if(a.files != null && a.files.Any(x => x.EndsWith(".hack")))
                         {
-                            count += Check(subDirectory.folders, false);
+                            count += a.files.Count;
+                            a.folders?.ForEach(x => Check(x, true));
+                        }
+                        else
+                        {
+                            a.folders?.ForEach(x => Check(x, false));
                         }
                     }
-
                 }
             }
-
-            return count;
         }
     }
 }
