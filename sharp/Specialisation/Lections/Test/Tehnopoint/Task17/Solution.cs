@@ -1,57 +1,67 @@
-﻿namespace Tehnopoint.Task17
+﻿using System.Diagnostics.Metrics;
+
+namespace Tehnopoint.Task17
 {
     internal class Solution
     {
         public void Test()
         {
-            int n = int.Parse(Console.ReadLine());
+            int count = int.Parse(Console.ReadLine());
             List<string> logins = new List<string>();
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < count; i++)
             {
-                string login = Console.ReadLine();
-                logins.Add(login);
+                logins.Add(Console.ReadLine());
             }
 
-            int m = int.Parse(Console.ReadLine());
-            for (int i = 0; i < m; i++)
+            int inputCount = int.Parse(Console.ReadLine());
+            for (int i = 0; i < inputCount; i++)
             {
-                string login = Console.ReadLine();
-                bool foundSimilar = false;
-                foreach (string existingLogin in logins)
+                string newLogin = Console.ReadLine();
+                bool result = false;
+               
+                foreach (string existLogin in logins.Where(x => x.Length == newLogin.Length))
                 {
-                    if (IsSimilar(existingLogin, login))
+                    if (Compair(existLogin, newLogin))
                     {
-                        foundSimilar = true;
+                        result = true;
                         break;
                     }
                 }
 
-                Console.WriteLine(foundSimilar ? "1" : "0");
+                Console.WriteLine(result ? "1" : "0");
             }
-        }
 
-        static bool IsSimilar(string s1, string s2)
-        {
-            if (s1 == s2)
-                return true;
-
-            if (s1.Length != s2.Length)
-                return false;
-
-            int diffCount = 0;
-            for (int i = 0; i < s1.Length; i++)
+            static bool Compair(string existLogin, string newLogin)
             {
-                if (s1[i] != s2[i])
+                if (existLogin == newLogin)
+                    return true;
+
+                //if (!existLogin.OrderBy(x => x).SequenceEqual(newLogin.OrderBy(x => x)))
+                //{
+                //    return false;
+                //}
+               
+                int diffCount = 0;
+                char? symbol1 = null;
+                char? symbol2 = null;
+                for (int i = 0; i < existLogin.Length; i++)
                 {
-                    diffCount++;
-                    if (diffCount > 2)
+                    if (existLogin[i] != newLogin[i])
+                    {
+                        diffCount++;
+                        if (diffCount > 1 && (symbol1 != newLogin[i] || symbol2 != existLogin[i]))
+                            return false;
+                        if (diffCount > 2)
+                            return false;
+                        symbol1 = existLogin[i];
+                        symbol2 = newLogin[i];
+                    }
+                    else if (existLogin[i] == newLogin[i] && diffCount == 1)
                         return false;
                 }
-                else
-                    diffCount = 0;
-            }
 
-            return diffCount == 2;
+                return diffCount == 2;
+            }
         }
     }
 }

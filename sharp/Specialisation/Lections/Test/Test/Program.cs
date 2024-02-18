@@ -2,40 +2,29 @@
 
 public class Program
 {
-
-    public class A
-    {
-        public virtual void Print1()
-        {
-            Console.Write("A");
-        }
-        public void Print2()
-        {
-            Console.Write("A");
-        }
-    }
-    public class B : A
-    {
-        public override void Print1()
-        {
-            Console.Write("B");
-        }
-    }
-    public class C : B
-    {
-        new public void Print2()
-        {
-            Console.Write("C");
-        }
-    }
-
     public static void Main()
     {
-        var c = new C();
-        A a = c;
+        var data = new TestClass();
+        data.Data = 1;
+        //Method(data);
+        Method2(data);
+        Console.WriteLine(data.Data);
 
-        a.Print2();
-        a.Print1();
-        c.Print2();
+    }
+    public static void Method(TestClass data)
+    {
+        data.Data = 2;
+        Console.WriteLine(  data.Data);
+    }
+    public static void Method2(TestClass data)
+    {
+        data = new TestClass();
+        data.Data = 2;
+        Console.WriteLine(data.Data);
+    }
+
+    public class TestClass
+    {
+        public int Data { get; set; }
     }
 }
