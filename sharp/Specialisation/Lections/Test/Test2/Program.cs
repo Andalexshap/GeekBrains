@@ -1,25 +1,29 @@
-﻿var count = int.Parse(Console.ReadLine());
-for (int i = 0; i < count; i++)
+﻿internal class Program
 {
-    var datestr = Console.ReadLine();
-    var result = "no";
-    var arrDate = datestr.Split(' ');
-    var month = int.Parse(arrDate[1]);
-    var year = int.Parse(arrDate[2]);
-    var day = int.Parse(arrDate[0]);
-    if (month == 2)
+    private static void Main(string[] args)
     {
-        if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
-        {
-            result = day <= 29 ? "yes" : "no";
-        }
-        else
-            result = day <= 28 ? "yes" : "no";
+        var a = new Class1();
+        Console.WriteLine(a.Test1());
+
+
     }
-    else if (new[] { 4, 6, 9, 11 }.Contains(month))
+}
+public interface IInterface1
+{
+    int Test1();
+}
+public interface IInterface2
+{
+    int Test1();
+}
+public class Class1 : IInterface1, IInterface2
+{
+    public int Test1()
     {
-        result = day <= 30 ? "yes" : "no";
+        if (this is IInterface1)
+            return 1;
+        else if (this is IInterface2)
+            return 2;
+        return 0;
     }
-    result = day <= 31 ? "yes" : "no"; ;
-    Console.WriteLine(result);
 }
