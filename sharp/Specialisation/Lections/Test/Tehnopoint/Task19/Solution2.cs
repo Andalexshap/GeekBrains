@@ -12,6 +12,9 @@
                 var a = Console.ReadLine().ToList();
                 //a = "YYYYYXXYXYXYYYZXXYYYYYZXYYYXYZZZXYYZZZXXZYXYYXZZYYZZYYZZZYZYXZYYYZYYZXYYYZYZZYZZXXZZZZYXZXZZZZZXXXYX".ToList();
                 bool isValid = true;
+                if (a.First() == 'Z' || a.Last() == 'X')
+                    isValid = false;
+
 
                 while (a.Count > 0 && isValid)
                 {
@@ -27,7 +30,7 @@
                         case 'X':
                             {
                                 int secondValue = -1;
-                                if(a.First() == 'Z') 
+                                if (a.First() == 'Z')
                                 {
                                     a.Remove('Z');
                                     break;
